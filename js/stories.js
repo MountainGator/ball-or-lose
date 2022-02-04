@@ -157,28 +157,36 @@ async function makeFutureBoard(games) {
 }
 
 async function getTopStories () {
-  const response = await axios.get(`https://newsapi.org/v2/everything?q=nba&from=${pastFormat}&to${format}&language=en&apiKey=f9d7a705eee0494d88a78a0b675a944a`);
-  const results = response.data;
-  const { articles } = results;
+  const response = await axios.get(`https://newsdata.io/api/1/news?apikey=pub_431042f7c286e1760c8f0277b9a0292a398f&category=sports&language=en&country=us&q=nba`); //&from_date=${pastFormat}&to_date${format}
+  const data = response.data;
+  const { results } = data;
 
-  putNewsOnPage(articles);
+  putNewsOnPage(results);
 }
 
 async function putNewsOnPage (articles) {
   const newsArr = await articles;
   
   for(let article of newsArr) {
-    let time = new Date(article.publishedAt);
+    let time = new Date(article.pubDate);
     let localTime = time.toString().slice(0,21);
-    
+    let description = `${article.description}`;
+    if(description.length > 200) {
+      description = description.slice(0, 200) + '...';
+    }
+
+    if(description == 'null') {
+      description = 'no short description available';
+    }
+
     let $item = $(
         `<div class="col-md-6 col-lg-3 mt-3">
           <div class="card text-white bg-dark">
             <div class="card-body">
               <h5 class="card-title">${article.title}</h5>
               <p class="card-text">On ${localTime}</p>
-              <p class="card-text">${article.description}</p>
-              <a href="${article.url}" class="btn btn-warning" target="_blank">Read More</a>
+              <p class="card-text">${description}</p>
+              <a href="${article.link}" class="btn btn-warning" target="_blank">Read More</a>
             </div>
           </div>
         </div>`);
