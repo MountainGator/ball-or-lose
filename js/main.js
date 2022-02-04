@@ -72,8 +72,8 @@ async function start() {
   // "Remember logged-in user" and log in, if credentials in localStorage
   await checkForRememberedUser();
   await getAndShowStoriesOnStart();
-  await getPastGames();
-  await getFutureGames();
+  // await getPastGames();
+  // await getFutureGames();
   await getTopStories();
   // if we got a logged-in user
   if (currentUser) {
