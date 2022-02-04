@@ -260,15 +260,19 @@ async function addDeleteBtn () {
   
   if (click === 2) {
     for(let story of await storyList.stories) {
+      if (story.username === currentUser.username) {
         $(`#${story.storyId}`).find('.delete-me').remove();
         $(`#${story.storyId}`).find('.select').show();
+      }
     }
     $allowDelete.text('Turn On Delete');
   } else if (click === 1){
     for(let story of await storyList.stories) {
+      if (story.username === currentUser.username) {
         $(`#${story.storyId}`).find('.select').hide();
         let $delBtn = $('<a type="button" class="btn btn-danger delete-me">Delete!</a>');
         $(`#${story.storyId}`).append($delBtn);
+      }
     }
     $allowDelete.text('Turn Off Delete');
   } 
@@ -283,9 +287,8 @@ async function deleteStory(e) {
   const $tgtBtn = $(e.target);
   const $div = $tgtBtn.closest('div');
   const $storyId = $div.attr('id');
-  const $poster = $tgtBtn.closest('p').text().slice(10);
-  console.log($poster);
-  await storyList.removeStory($poster, $storyId); 
+
+  await storyList.removeStory(currentUser, $storyId); 
   
   $div.parent().remove();
   updateUIOnUserLogin();
