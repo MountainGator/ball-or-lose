@@ -280,7 +280,7 @@ async function addDeleteBtn () {
   click = click === 1 ? 2 : 1;
 }
 
-$allStoriesList.on('click', '.delete-me', deleteStory)
+$allStoriesList.on('click', '.delete-me', deleteStory);
 
 async function deleteStory(e) {
   e.preventDefault();
@@ -293,5 +293,38 @@ async function deleteStory(e) {
   $div.parent().remove();
   updateUIOnUserLogin();
   addDeleteBtn();
+}
+
+$('#newStories').on('click', '#faves', showFavorites);
+
+function showFavorites (evt) {
+  evt.preventDefault();
+  
+  $allStoriesList.empty();
+  let count = 0;
+
+  for (let story of storyList.stories) {
+    if(currentUser.isFavorite(story)) {
+      const $story = generateStoryMarkup(story, count);
+      $allStoriesList.append($story);
+      count ++;
+    }
+  }
+  $allStoriesList.show();
+  $('#faves').text('All Stories');
+  $('#faves').attr('id', 'all-stories');
+  checkForFavorites(currentUser.favorites);
+}
+
+$('#newStories').on('click', '#all-stories', showAllStories);
+
+async function showAllStories (ev) {
+  ev.preventDefault();
+
+  await getAndShowStoriesOnStart();
+
+  $('#all-stories').text('My Favorites');
+  $('#all-stories').attr('id', 'faves');
+  updateUIOnUserLogin();
 }
 
